@@ -1,4 +1,4 @@
-import {runTest} from '../utils.js';
+import {log, runTest} from '../utils.js';
 
 export default () => {
     let proxyVals = [];
@@ -34,15 +34,14 @@ export default () => {
     runTest('Set via proxy', () => {
         proxy.someBool = proxyVals.length % 2 === 0;
     });
-    console.log('Proxy vals:', proxyVals);
 
     runTest('Set via obj/setter', () => {
         setter.someBool = setterVals.length % 2 === 0;
     });
-    console.log('Setter values:', setterVals);
 
     runTest('Set via setState method', () => {
         setStater.setState('someBool', setStater.vals.length % 2 === 0);
     });
-    console.log('setState values:', setStater.vals);
+
+    log('-----');
 }

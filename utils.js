@@ -16,8 +16,6 @@ export const log = message => {
 };
 
 export function runTest(name, action) {
-    log(`Starting ${name}`);
-
     let timeStart = Date.now();
     let counter = 250000;
 
@@ -28,5 +26,5 @@ export function runTest(name, action) {
 
     let timeEnd = Date.now() - timeStart;
 
-    log(`Completed ${name}: ${timeEnd}ms`);
+    log(`${name}: ${timeEnd}ms`);
 }

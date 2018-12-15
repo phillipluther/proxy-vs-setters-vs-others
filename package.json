@@ -1,0 +1,22 @@
+{
+  "name": "proxy-vs-setters-vs-others",
+  "version": "1.0.0",
+  "description": "Little experiment comparing some state management ideas.",
+  "main": "index.js",
+  "scripts": {
+      "dev": "lite-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phillipluther/proxy-vs-setters-vs-others.git"
+  },
+  "keywords": ["proxy", "setters", "setState", "vs", "comparison"],
+  "author": "Phillip Luther <dev@phillipluther.com>",
+  "bugs": {
+    "url": "https://github.com/phillipluther/proxy-vs-setters-vs-others/issues"
+  },
+  "homepage": "https://github.com/phillipluther/proxy-vs-setters-vs-others#readme",
+  "devDependencies": {
+    "lite-server": "^2.4.0"
+  }
+}

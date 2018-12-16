@@ -2,21 +2,55 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Proxy vs. Setters vs. setState Demo</title>
+        <title>Proxy vs. Setters Performance Testing</title>
         <style>
             html,
             body {
                 margin: 0;
                 background: #000;
                 color: #cba;
+                font: 1em/1.5rem sans-serif;
             }
 
-            body { padding: 30px; }
+            body {
+                padding: 30px;
+                margin: 0 auto;
+                max-width: 800px;
+            }
+
+            h1,
+            h2,
+            h3,
+            p {
+                margin-bottom: 1.5rem;
+            }
+
+            h2,
+            h3 {
+                margin-top: 2em;
+            }
+
+            th,
+            td {
+                padding: 0.5rem 1rem;
+                border-bottom: 1px solid #333;
+            }
+
+            td:last-child { text-align: right; }
 
             pre {
-                max-width: 560px;
                 font-size: 1rem;
+                padding: 1rem;
                 line-height: 1.25rem;
+                background: #191919;
+            }
+
+            code {
+                white-space: normal;
+            }
+
+            a {
+                color: #fc9;
             }
 
             .log {
@@ -34,14 +68,152 @@
         </style>
     </head>
     <body>
+        <h1>Proxy vs. Setters Performance Testing</h1>
+        <p>
+            I wanna use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">proxies</a>
+            so badly because they're the bee's knees.
+        </p>
+        <p>
+            All I ever hear about proxies is that they're cool but slow. Like ... catastrophically
+            slow and 100x more sluggish than
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set">setters</a>.
+            Sure, I've seen the jsPerf tests and read the doom/gloom blog posts but wanted to play
+            around with 'em myself.
+        </p>
+        <p>
+            I got some surprising results, detailed in the table. Especially, what the hell is up
+            with Chrome and the single VS multi-setter performance delta? And speaking of Chrome,
+            proxies aren't as slow as you might think; in other browsers, yes ... the performance is
+            demonstrable.
+        </p>
+        <p>
+            Keep in mind these timings were for 250k actions. That is, setting a value on an object
+            250,000 times.
+        </p>
+        <p>
+            There's also a bit of live test output in the faux-console below.
+            <a href="https://github.com/phillipluther/proxy-vs-setters-vs-others">Code experiment is here</a>.
+        </p>
+
+        <h2>General Findings for Simple "Set" Actions</h2>
+        <p>
+            These numbers were recorded on 12/15/2018 in the browsers (on Windows) listed below. I
+            have no idea what kind of optimizations have happened since then or how this might
+            differ on other operating systems.
+        </p>
+        <p>
+            I didn't mess with any reflection or useful intercepts; I just wanted to see bare
+            numbers. I'll likely update this with more realistic use cases down the way.
+        </p>
+
+        <h3>Chrome 70</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Time for 250k actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Vanilla object</td>
+                    <td>7ms</td>
+                </tr>
+                <tr>
+                    <td>Object with setters created on instantiation</td>
+                    <td>77ms</td>
+                </tr>
+                <tr>
+                    <td>Object with setters created via defineProperty</td>
+                    <td>65ms</td>
+                </tr>
+                <tr>
+                    <td>Proxy</td>
+                    <td>27ms</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Firefox Dev Edition 65</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Time for 250k actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Vanilla object</td>
+                    <td>2ms</td>
+                </tr>
+                <tr>
+                    <td>Object with setters created on instantiation</td>
+                    <td>4ms</td>
+                </tr>
+                <tr>
+                    <td>Object with setters created via defineProperty</td>
+                    <td>2ms</td>
+                </tr>
+                <tr>
+                    <td>Proxy</td>
+                    <td>57ms</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Edge 17</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Time for 250k actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Vanilla object</td>
+                    <td>4ms</td>
+                </tr>
+                <tr>
+                    <td>Object with setters created on instantiation</td>
+                    <td>16ms</td>
+                </tr>
+                <tr>
+                    <td>Object with setters created via defineProperty</td>
+                    <td>12ms</td>
+                </tr>
+                <tr>
+                    <td>Proxy</td>
+                    <td>112ms</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Test Results for Your Browser</h2>
         <pre><code id="output"></code></pre>
 
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.4/benchmark.min.js"></script>
         <script type="module">
-            import simpleSet from './experiments/simple-set.js';
-            import classicProxyTest from './experiments/classic-proxy-test.js';
+            import simpleSetComparison from './experiments/simple-set-comparison.js';
+            import multiSetterDiscrepancies from './experiments/multi-setter-discrepancies.js';
 
-            simpleSet();
-            classicProxyTest();
+            simpleSetComparison();
+            multiSetterDiscrepancies();
         </script>
+
+        <p>
+            The "Single vs. Multiple" performance test above proved interesting in Chrome when I
+            ran it, as with a single setter created via <code>defineProperty</code> performance was
+            comparable to a vanilla JS object (10ms vs 4ms, respectively).
+        </p>
+        <p>
+            With multiple setters, performance cratered and was actually worse than proxies (64ms
+            vs 41ms).
+        </p>
+        <p>
+            Also note that I may make this page pretty, someday.
+        </p>
     </body>
 </html>

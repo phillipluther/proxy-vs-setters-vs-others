@@ -4,7 +4,8 @@
   "description": "Little experiment comparing some state management ideas.",
   "main": "index.js",
   "scripts": {
-    "dev": "lite-server"
+    "dev": "lite-server",
+    "lint": "eslint ./experiments utils.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,7 @@
   },
   "homepage": "https://github.com/phillipluther/proxy-vs-setters-vs-others#readme",
   "devDependencies": {
-    "benchmark": "^2.1.4",
+    "eslint": "^5.10.0",
     "lite-server": "^2.4.0"
   }
 }

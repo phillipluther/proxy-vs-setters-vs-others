@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/phillipluther/proxy-vs-setters-vs-others/issues"
   },
-  "homepage": "https://github.com/phillipluther/proxy-vs-setters-vs-others#readme",
+  "homepage": "https://phillipluther.github.io/proxy-vs-setters-vs-others/",
   "devDependencies": {
     "eslint": "^5.10.0",
     "lite-server": "^2.4.0"
